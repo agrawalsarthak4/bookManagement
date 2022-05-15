@@ -102,7 +102,7 @@ try{
     if (isValid(rating)) {
         
     if(!validRating(rating)){
-        return res.status(200).send({ status: false, data: "Enter a Valid Rating (1 to 5)" })
+        return res.status(400).send({ status: false, data: "Enter a Valid Rating (1 to 5)" })
     }
        
         updateBlog.rating = req.body.rating
