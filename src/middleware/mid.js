@@ -20,7 +20,7 @@ const authenticate=async function(req,res,next){
         
         let decodedToken = jwt.verify(token, 'Project3' )
         if(!decodedToken){
-            return res.status(400).send({status:false ,msg:"Token is not"})   
+            return res.status(400).send({status:false ,msg:"Token is not present"})   
         }
     
    
@@ -30,11 +30,19 @@ const authenticate=async function(req,res,next){
        
 
 catch(err){
-    return res.status(500).send({msg:err.message})
+  if(err.name=='TokenExpiredError'){
+
+    return res.status(400).send({status:false , msg:"token expired"})
+  } 
+
+  if (err.name==='JsonWebTokenError'){
+    return res.status(401).send({status:false , msg:"Invalid authentication"})
+
 }
+return res.status(500).send({ msg:err.message})
+}}
 
 
-}
 const authorise1=async function(req,res,next){
     try{
         let token = req.headers["x-api-key"]
@@ -62,7 +70,7 @@ const authorise1=async function(req,res,next){
         
         let decodedToken = jwt.verify(token, 'Project3' )
         if(!decodedToken){
-            return res.status(400).send({status:false ,msg:"Token is not"})   
+            return res.status(400).send({status:false ,msg:"Token is not present"})   
         }
         console.log(decodedToken.userId+"    "+validBook.userId)
         if(decodedToken.userId!=validBook.userId){
@@ -74,33 +82,20 @@ const authorise1=async function(req,res,next){
     }
             
 catch(err){
+    if(err.name=='TokenExpiredError'){
+  
+      return res.status(400).send({status:false , msg:"token expired"})
+    } 
+  
+    if (err.name==='JsonWebTokenError'){
+        
+      return res.status(401).send({status:false , msg:"Invalid authentication"})
+  
+  }
     return res.status(500).send({msg:err.message})
 }}
 
         
-const authorise2=async function(req,res,next){
-    try{
-        let token=req.headers["x-api-key"]
-        let decodedToken=jwt.verify(token,"Project3")
-        
-             let match = req.params.bookId
-            let bookID = await booksModel.findById(match).select({userId:1})
-         let data=decodedToken.userId //we are fetching userid
-        // let userID=req.body.userId   //get the userId from req.body for post api
-        if(bookID){  
-            if(data==bookID.userId){
-                
-                next()
-            }
-            else{
-                return res.status(403).send({msg:"cannot access other's account"})
-
-        
-            }}}
-            
-catch(err){
-    return res.status(500).send({msg:err.message})
-}}
 
                
         
@@ -109,5 +104,4 @@ catch(err){
 
 module.exports.authenticate=authenticate
 module.exports.authorise1=authorise1
-module.exports.authorise2=authorise2
 
