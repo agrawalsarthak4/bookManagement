@@ -62,6 +62,10 @@ const createBooks = async function (req, res) {
 
         }
 
+        if (!isValidObjectId(userId)) {
+            return res.status(400).send({ status: false, messgae: "Please provide valid userId" })
+        }
+
 
         if (!isValid(userId)) {
             return res.status(400).send({ status: false, messgae: "Please provide valid userId" })
@@ -106,7 +110,6 @@ const createBooks = async function (req, res) {
 
 const getBooks = async function (req, res) {
     try {
-        // const query={isDeleted:false,deletedAt:null,isPublished:true}
         const getQuery = req.query
        
         if (Object.keys(getQuery).length == 0) {
@@ -166,15 +169,6 @@ const getBooksById = async function (req, res) {
 
 
 
-// Update a book by changing its
-// title
-// excerpt
-// release date
-// ISBN
-// Make sure the unique constraints are not violated when making the update
-
-
-
 
 const updateBooks = async function (req, res) {
     try {
@@ -198,7 +192,6 @@ const updateBooks = async function (req, res) {
         }
 
         if (releasedAt) {
-            // updateBlog.releasedAt=releasedAt
             updateBlog.releasedAt = releasedAt ? new Date() : null;
         }
           //title
@@ -233,7 +226,6 @@ const deleteBooks = async function (req, res) {
         const updateBooks = await booksModel.findByIdAndUpdate(bookId, {isDeleted:true, deletedAt:new Date()}, { new: true }, )
        const allReview=await reviewModel.updateMany({bookId:bookId,isDeleted:false},{isDeleted:true})
       
-        // "deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z
         res.status(200).send({ status: true, data: "Book is Deleted" })
     }
     catch (err) {
@@ -257,6 +249,3 @@ let testapi = function (req, res) {
 module.exports={createBooks,getBooks,getBooksById,updateBooks,deleteBooks,testapi}
 
 
-// module.exports.updateBlogs=updateBlogs
-// module.exports.deleteId=deleteId
-// module.exports.deleteByQuery=deleteByQuery

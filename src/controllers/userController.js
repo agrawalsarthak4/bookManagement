@@ -96,7 +96,6 @@ const loginUser=async function(req,res){
     }        
     let {email,password}=req.body
     
-
     if(!isValid(email)){
         return res.status(400).send({status:false,message:" email is required"})
 

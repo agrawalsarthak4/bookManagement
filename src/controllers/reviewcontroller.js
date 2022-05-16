@@ -102,7 +102,7 @@ try{
     if (isValid(rating)) {
         
     if(!validRating(rating)){
-        return res.status(400).send({ status: false, data: "Enter a Valid Rating (1 to 5)" })
+        return res.status(200).send({ status: false, data: "Enter a Valid Rating (1 to 5)" })
     }
        
         updateBlog.rating = req.body.rating
@@ -144,18 +144,11 @@ let reviewed= await reviewModel.findOne({_id: reviewid,bookId: id,isDeleted: fal
 
     let reviewBook = await booksModel.findOneAndUpdate({isDeleted:false,_id:id},{$inc:{reviews:-1}})
     
-    // reviewBook.reviews=reviewBook.reviews-1
-    // reviewBook.save()
 
 }
 catch (err) {
 res.status(500).send({ status: false, msg: err.message })
 }
 }
-// DELETE /books/:bookId/review/:reviewId
-// Check if the review exist with the reviewId. Check if the book exist with the bookId. 
-// Send an error response with appropirate status code like this if the book or book review does not exist
-// Delete the related reivew.
-// Update the books document - decrease review count by one
 
     module.exports={createReview,reviewupdate,reviewDelete}
