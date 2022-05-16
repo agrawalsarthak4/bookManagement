@@ -97,6 +97,14 @@ const loginUser=async function(req,res){
     let {email,password}=req.body
     
 
+    if(!isValid(email)){
+        return res.status(400).send({status:false,message:" email is required"})
+
+    }
+    if(!isValid(password)){
+        return res.status(400).send({status:false,message:"password is required"})
+
+    }
 
     let data=await userModel.findOne({email:email,password:password})
     if(!data){
